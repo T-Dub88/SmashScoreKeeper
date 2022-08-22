@@ -15,6 +15,10 @@ class PlayerViewModel: ViewModel() {
     private val _playerList: MutableLiveData<List<Player>> = MutableLiveData(listOf())
     val playerList: LiveData<List<Player>> = _playerList
 
+    // Variable to track the round number.
+    private val _roundNumber: MutableLiveData<Int> = MutableLiveData(1)
+    val roundNumber: LiveData<Int> = _roundNumber
+
     // Changes the display name in the name entry box.
     fun onNameChange(name: String) {
         _playerNameText.value = name
@@ -32,4 +36,14 @@ class PlayerViewModel: ViewModel() {
         _playerList.value = _playerList.value?.toMutableList()?.minus(player)
     }
 
+    // Calls all calculations to end a round.
+    fun endRound() {
+        // Increases the round count.
+        _roundNumber.value = _roundNumber.value?.plus(1)
+
+        // Calls finalize stats for each player object in list.
+        for (player in _playerList.value!!) {
+            player.finalizeStats()
+        }
+    }
 }

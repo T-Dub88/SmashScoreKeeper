@@ -1,16 +1,18 @@
 package com.example.smashscorekeeper.navigation
 
 import androidx.compose.runtime.Composable
-
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.smashscorekeeper.ui.SelectPlayersScreen
 import com.example.smashscorekeeper.ui.StatTrackingScreen
+import com.example.smashscorekeeper.viewmodel.PlayerViewModel
 
 @Composable
 fun SetupNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    playerViewModel: PlayerViewModel = viewModel()
 ) {
     NavHost(
         navController = navController,
@@ -19,13 +21,13 @@ fun SetupNavGraph(
         composable(
             route = Screen.SelectPlayers.route
         ) {
-            SelectPlayersScreen(navController)
+            SelectPlayersScreen(navController, playerViewModel)
         }
 
         composable(
             route = Screen.StatTracking.route
         ) {
-            StatTrackingScreen(navController)
+            StatTrackingScreen(navController, playerViewModel)
         }
 
     }

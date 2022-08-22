@@ -1,6 +1,5 @@
 package com.example.smashscorekeeper.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,34 +14,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.smashscorekeeper.navigation.Screen
 import com.example.smashscorekeeper.players.Player
 import com.example.smashscorekeeper.viewmodel.PlayerViewModel
 
-
 @Composable
-fun SelectPlayersScreen(navController: NavController, playerViewModel: PlayerViewModel = viewModel()) {
+fun SelectPlayersScreen(navController: NavController, playerViewModel: PlayerViewModel) {
     val playerName: String by playerViewModel.playerNameText.observeAsState(initial = "")
     val playerList by playerViewModel.playerList.observeAsState(initial = emptyList())
     SelectPlayersContent(
-        viewModel = playerViewModel,
-        navController = navController,
         playerName = playerName,
         onNameChange = { playerViewModel.onNameChange(it) },
+        addPlayer = { playerViewModel.addPlayer(it) },
+        removePlayer = { playerViewModel.removePlayer(it) },
+        startGame = { navController.navigate(route = Screen.StatTracking.route) },
         playerList = playerList
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectPlayersContent(playerList: List<Player>, viewModel: PlayerViewModel, navController: NavController, playerName: String, onNameChange: (String) -> Unit) {
+fun SelectPlayersContent(
+    playerName: String,
+    onNameChange: (String) -> Unit,
+    addPlayer: (String) -> Unit,
+    removePlayer: (String) -> Unit,
+    startGame: () -> Unit,
+    playerList: List<Player>
+) {
     Column {
         OutlinedTextField(
             value = playerName,
@@ -56,9 +58,8 @@ fun SelectPlayersContent(playerList: List<Player>, viewModel: PlayerViewModel, n
         Row {
             Button(
                 onClick = {
-                    viewModel.addPlayer(playerName)
-                    Log.i("list", viewModel.playerList.value.toString())
-                    viewModel.onNameChange("")
+                    addPlayer(playerName)
+                    onNameChange("")
                 },
                 modifier = Modifier
                     .fillMaxWidth(.5f)
@@ -72,8 +73,8 @@ fun SelectPlayersContent(playerList: List<Player>, viewModel: PlayerViewModel, n
 
             Button(
                 onClick = {
-                    viewModel.removePlayer(playerName)
-                    viewModel.onNameChange("")
+                    removePlayer(playerName)
+                    onNameChange("")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -84,7 +85,7 @@ fun SelectPlayersContent(playerList: List<Player>, viewModel: PlayerViewModel, n
         }
 
         Button(
-            onClick = { navController.navigate(route = Screen.StatTracking.route) },
+            onClick = startGame,
             modifier = Modifier
                 .padding(all = 16.dp)
                 .fillMaxWidth()
@@ -94,19 +95,12 @@ fun SelectPlayersContent(playerList: List<Player>, viewModel: PlayerViewModel, n
 
         LazyColumn {
             items(playerList) { player ->
-               Text(
-                   text = player.name,
-                   modifier = Modifier.padding(horizontal = 16.dp),
-                   fontSize = 30.sp
-               )
+                Text(
+                    text = player.name,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    fontSize = 30.sp
+                )
             }
         }
-
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun SelectPlayersScreenPreview() {
-    SelectPlayersScreen(navController = rememberNavController())
 }

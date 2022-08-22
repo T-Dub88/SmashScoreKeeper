@@ -14,15 +14,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Red900Light,
-    secondary = Gray700Light,
-    tertiary = Red900Dark
-)
-
-private val LightColorScheme = lightColorScheme(
     primary = Red900,
     secondary = Gray700,
     tertiary = Red900Light
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = Red900Light,
+    secondary = Gray700Light,
+    tertiary = Red900Dark
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -43,10 +43,6 @@ fun SmashScoreKeeperTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
