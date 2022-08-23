@@ -27,7 +27,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.StatTracking.route
         ) {
-            StatTrackingScreen(navController, playerViewModel)
+            StatTrackingScreen(playerViewModel)
         }
 
     }
